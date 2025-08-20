@@ -26,4 +26,20 @@ public class PointService {
     public List<PointHistory> findPointHistoriesById(long id) {
         return pointHistoryTable.selectAllByUserId(id);
     }
+
+    public synchronized UserPoint charge(long id, long amount) {
+        UserPoint currentPoint = findPointById(id);
+
+        long chargedPoint = currentPoint.point() + amount;
+
+        UserPoint savedUserPoint = userPointTable.insertOrUpdate(id, chargedPoint);
+
+        updatePointHistory(savedUserPoint, amount, TransactionType.CHARGE);
+
+        return savedUserPoint;
+    }
+
+    private void updatePointHistory(UserPoint savedUserPoint, long amount, TransactionType type) {
+        pointHistoryTable.insert(savedUserPoint.id(), amount, type, savedUserPoint.updateMillis());
+    }
 }
