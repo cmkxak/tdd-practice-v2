@@ -1,8 +1,12 @@
 package io.hhplus.tdd.point;
 
-import io.hhplus.tdd.HHPlusAppExcetion;
+import io.hhplus.tdd.exception.HHPlusAppExcetion;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.domain.PointHistory;
+import io.hhplus.tdd.point.domain.enums.TransactionType;
+import io.hhplus.tdd.point.domain.UserPoint;
+import io.hhplus.tdd.point.service.PointService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
