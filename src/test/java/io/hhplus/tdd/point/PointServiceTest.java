@@ -1,5 +1,6 @@
 package io.hhplus.tdd.point;
 
+import io.hhplus.tdd.HHPlusAppExcetion;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PointServiceTest {
 
@@ -82,6 +84,19 @@ class PointServiceTest {
 
         int lastIdx = chargeHists.size() - 1;
         assertThat(chargeHists.get(lastIdx).amount()).isEqualTo(15000);
+    }
+
+    @Test
+    void fail_not_enough_balance() {
+        //given
+        long id = 1;
+        long amount = 15000;
+
+        //when
+        HHPlusAppExcetion hhPlusAppExcetion = assertThrows(HHPlusAppExcetion.class, () -> pointService.use(id, amount));
+
+        //then
+        assertThat(hhPlusAppExcetion.getErrorResponse().code()).isEqualTo("ERR-100");
     }
 
 
