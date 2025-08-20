@@ -5,6 +5,7 @@ import io.hhplus.tdd.database.UserPointTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,5 +65,24 @@ class PointServiceTest {
         System.out.println("UserPoint = " + point.point());
         assertThat(point.point()).isEqualTo(1000);
     }
+
+    @Test
+    void charge_hist() {
+        //given
+        long id = 1;
+        long amount = 15000;
+
+        //when
+        UserPoint updatedUserPoint = pointService.charge(id, amount);
+
+        //then
+        List<PointHistory> chargeHists = pointHistoryTable.selectAllByUserId(updatedUserPoint.id())
+                .stream().filter(pointHistory -> pointHistory.type() == TransactionType.CHARGE)
+                .toList();
+
+        int lastIdx = chargeHists.size() - 1;
+        assertThat(chargeHists.get(lastIdx).amount()).isEqualTo(15000);
+    }
+
 
 }
