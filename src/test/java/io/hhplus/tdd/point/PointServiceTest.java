@@ -99,5 +99,42 @@ class PointServiceTest {
         assertThat(hhPlusAppExcetion.getErrorResponse().code()).isEqualTo("ERR-100");
     }
 
+    @Test
+    void success_use() throws InterruptedException {
+        //given
+        long id = 1;
+        long amount = 500;
+        int threadCnt = 10;
+
+        ExecutorService executor = Executors.newFixedThreadPool(threadCnt);
+        CountDownLatch latch = new CountDownLatch(threadCnt); //모든 스레드가 끝날 때까지 메인 스레드가 기다림.
+
+        //when
+        for (int i = 0; i < threadCnt; i++) {
+            executor.submit(() -> {
+                try {
+                    long threadId = Thread.currentThread().getId();
+                    String threadName = Thread.currentThread().getName();
+
+                    UserPoint point = pointService.use(id, amount);
+                    System.out.println(
+                            String.format("threadId=%d | threadName=%s | point=%d",
+                                    threadId, threadName, point.point())
+                    );
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await();
+
+        //when
+        UserPoint remainingUserPoint = pointService.findPointById(id);
+
+        //then
+        assertThat(remainingUserPoint.point()).isEqualTo(5000);
+    }
+
 
 }
