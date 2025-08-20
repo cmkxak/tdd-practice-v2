@@ -20,7 +20,6 @@ public class PointService {
         this.userPointTable = userPointTable;
     }
 
-
     public UserPoint findPointById(long id) {
         return userPointTable.selectById(id);
     }
