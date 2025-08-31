@@ -1,4 +1,4 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.domain;
 
 public record UserPoint(
         long id,
@@ -8,5 +8,9 @@ public record UserPoint(
 
     public static UserPoint empty(long id) {
         return new UserPoint(id, 0, System.currentTimeMillis());
+    }
+
+    public static UserPoint of(long id) {
+        return new UserPoint(id, 10000, System.currentTimeMillis());
     }
 }
